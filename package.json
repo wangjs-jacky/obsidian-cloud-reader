@@ -1,0 +1,24 @@
+{
+  "name": "obsidian-cloud-reader",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "aws4fetch": "^1.0.20",
+    "dompurify": "^3.4.15",
+    "fast-xml-parser": "^5.11.1",
+    "markdown-it": "^15.0.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "wrangler": "^4.131.1"
+  },
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "A private, per-account web reader for Obsidian notes in OSS"
+}

@@ -1,0 +1,9 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {createApp} from '../src/app.mjs'
+const origin='https://reader.test'
+function fixture(){const seen=[],auth={session:async r=>r.headers.get('Cookie')?{userId:r.headers.get('Cookie'),name:'User'}:null,fetch:async()=>new Response('login')};const app=createApp(auth),env={PUBLIC_ORIGIN:origin,ASSETS:{fetch:async()=>new Response('PUBLIC EMPTY SHELL')},LIBRARY:{idFromName:n=>n,get:id=>({fetch:async r=>{seen.push(id);return new Response('tenant response')}})}};return {app,env,seen}}
+test('public homepage has no library access, anonymous API is refused',async()=>{const f=fixture();assert.equal(await(await f.app.fetch(new Request(origin),f.env)).text(),'PUBLIC EMPTY SHELL');assert.equal((await f.app.fetch(new Request(origin+'/api/catalog'),f.env)).status,401);assert.deepEqual(f.seen,[])})
+test('two verified account identities route to distinct stores, spoofed user params ignored',async()=>{const f=fixture();await f.app.fetch(new Request(origin+'/api/object?userId=B&key=x',{headers:{Cookie:'A','X-User-ID':'B'}}),f.env);await f.app.fetch(new Request(origin+'/api/catalog',{headers:{Cookie:'B'}}),f.env);assert.deepEqual(f.seen,['user:A','user:B'])})
+test('untrusted and empty session identifiers cannot choose a store',async()=>{const f=fixture();for(const id of ['../owner-library-v1','user:A'])assert.equal((await f.app.fetch(new Request(origin+'/api/catalog',{headers:{Cookie:id}}),f.env)).status,401);assert.deepEqual(f.seen,[])})
+test('cross-site connection mutations fail before library access',async()=>{const f=fixture();assert.equal((await f.app.fetch(new Request(origin+'/api/settings',{method:'POST',headers:{Cookie:'A',Origin:'https://evil.test'},body:'{}'}),f.env)).status,403);assert.deepEqual(f.seen,[])})

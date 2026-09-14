@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-cloud-reader",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-14",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {"directory":"dist","binding":"ASSETS","run_worker_first":true,"not_found_handling":"single-page-application"},
+  "vars": {"PUBLIC_ORIGIN":"https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev","GITHUB_CLIENT_ID":"YOUR-OAUTH-CLIENT-ID"},
+  "durable_objects":{"bindings":[{"name":"LIBRARY","class_name":"Library"},{"name":"AUTH_SESSIONS","class_name":"AuthSession"}]},
+  "migrations":[{"tag":"v1","new_sqlite_classes":["Library","AuthSession"]}],
+  "ratelimits":[{"name":"AUTH_LIMITER","namespace_id":"2026091501","simple":{"limit":20,"period":60}}]
+}

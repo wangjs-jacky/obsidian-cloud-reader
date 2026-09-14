@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>我的知识库</title>
+    <link rel="stylesheet" href="/reader.css" />
+    <script type="module" src="/reader.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="brand">随身笔记<span>我的知识库</span></a>
+      <nav>
+        <button id="theme" aria-label="切换深浅主题">◐ 主题</button
+        ><button id="settings" hidden>绑定 OSS</button><a id="login" class="account-link" href="/auth/login">登录 / 注册</a><span id="account-name" hidden></span>
+        <form id="logout" hidden method="post" action="/auth/logout"><button>退出登录</button></form>
+      </nav>
+    </header>
+    <div class="layout">
+      <aside>
+        <h1>从一篇笔记开始。</h1>
+        <p class="muted">把零散的想法，重新连接起来。</p>
+        <label class="search"
+          >搜索笔记<input id="search" type="search" placeholder="搜索标题或路径" autocomplete="off"
+        /></label>
+        <div class="catalog-info">
+          <span id="count">尚未绑定知识库</span><button id="refresh" disabled>检查更新</button>
+        </div>
+        <p id="sync" role="status" class="muted"></p>
+        <section id="load-progress" hidden aria-live="polite">
+          <div class="progress-caption">
+            <span id="progress-label"></span><span id="progress-value"></span>
+          </div>
+          <progress id="sync-progress" max="100" aria-label="目录更新进度"></progress>
+          <p id="progress-detail"></p>
+        </section>
+        <div class="tree-toolbar">
+          <span id="view-label">文件目录</span><button id="clear-search" hidden>返回目录</button
+          ><button id="locate" disabled>定位当前笔记</button>
+        </div>
+        <nav id="tree" aria-label="笔记目录"></nav>
+        <ul id="notes" hidden aria-label="搜索结果"></ul>
+        <div class="pager" id="search-pager" hidden>
+          <button id="prev">上一页</button><span id="page"></span><button id="next">下一页</button>
+        </div>
+        <details>
+          <summary>缓存状态</summary>
+          <p id="cache"></p>
+        </details>
+      </aside>
+      <main id="main">
+        <div class="welcome">
+          <small>你的私人阅读空间</small>
+          <h2>让知识随手可读。</h2>
+          <p>登录网站账号，再绑定自己的 OSS，即可随处阅读笔记。</p>
+          <p class="muted">内容按需加载，已读内容会复用云端缓存。</p>
+        </div>
+      </main>
+    </div>
+    <dialog id="config">
+      <form id="config-form">
+        <h2>连接 OSS</h2>
+        <p>填入 Remotely Save 使用的连接信息。支持未加密的 Markdown 仓库，只读取文件。</p>
+        <label
+          >Endpoint<input
+            name="endpoint"
+            placeholder="oss-cn-shanghai.aliyuncs.com"
+            required /></label
+        ><label>Bucket<input name="bucket" required /></label
+        ><label>Region<input name="region" placeholder="cn-shanghai" required /></label
+        ><label>目录前缀（可留空）<input name="prefix" /></label
+        ><label>Access Key ID<input name="accessKeyId" autocomplete="off" required /></label
+        ><label
+          >Access Key Secret<input
+            name="secretAccessKey"
+            type="password"
+            autocomplete="new-password"
+            required
+        /></label>
+        <p class="muted">密钥仅提交到已登录的服务端，保存后不会回显。更换连接会清空旧缓存。</p>
+        <p id="config-status" role="status"></p>
+        <div class="actions">
+          <button type="button" id="cancel">取消</button><button type="submit">验证并保存</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
