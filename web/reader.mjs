@@ -1,4 +1,5 @@
 import { mountIcons } from "./icons.mjs"
+import { mountGuestMotion } from "./guest-motion.mjs"
 import { mountWorkspace } from "./workspace.mjs"
 import { mountOutline } from "./outline.mjs"
 import MarkdownIt from "markdown-it"
@@ -30,6 +31,7 @@ async function api(path, options = {}) {
   return body
 }
 mountIcons()
+mountGuestMotion()
 mountWorkspace()
 mountOutline($("#main"), $("#outline"))
 const tree = new NoteTree($("#tree"), api, (key) => note(key))

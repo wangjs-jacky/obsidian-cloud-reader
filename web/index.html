@@ -23,13 +23,34 @@
     </header>
     <p id="session-status" role="status">正在连接你的阅读空间…</p>
     <section id="guest-home" hidden aria-labelledby="guest-title">
-      <img class="guest-icon" src="/assets/icon-192.png" width="76" height="76" alt="" />
-      <p class="guest-eyebrow">你的笔记，随身可读</p>
-      <h1 id="guest-title">让知识，陪你走得更远。</h1>
-      <p class="guest-description">连接自己的 Obsidian 知识库，<br />在浏览器里，继续阅读和探索。</p>
-      <a class="guest-login" href="/auth/login">使用 GitHub 登录 <span aria-hidden="true">↗</span></a>
-      <p class="guest-note">首次登录自动创建账号，再绑定自己的 OSS。</p>
-      <div class="guest-features"><div><strong>自己的知识库</strong><p>每个账号独立连接</p></div><div><strong>专注阅读</strong><p>目录、搜索与文章大纲</p></div><div><strong>随时继续</strong><p>按需加载，复用阅读缓存</p></div></div>
+      <div class="guest-glow" aria-hidden="true"></div>
+      <div class="guest-hero">
+        <div class="guest-copy">
+          <div class="guest-kicker"><span aria-hidden="true"></span>为 Obsidian 而生的云端阅读器</div>
+          <h1 id="guest-title">把你的知识库，<br /><em>带到任何一块屏幕。</em></h1>
+          <p class="guest-description">连接自己的 OSS，在浏览器里继续阅读、搜索与探索。你的笔记始终属于你。</p>
+          <div class="guest-actions">
+            <a id="guest-login" class="guest-login" href="/auth/login"><span class="guest-login-icon" aria-hidden="true"></span>使用 GitHub 登录<span class="guest-arrow" aria-hidden="true">↗</span></a>
+            <a class="guest-source" href="https://github.com/wangjs-jacky/obsidian-cloud-reader" target="_blank" rel="noopener noreferrer">查看开源代码</a>
+          </div>
+          <p class="guest-note"><span aria-hidden="true">✓</span> 首次登录自动创建账号，无需密码</p>
+        </div>
+        <div class="guest-visual" aria-hidden="true">
+          <div class="guest-orb-wrap"><canvas id="guest-orb"></canvas></div>
+          <div class="guest-ring guest-ring-one"></div>
+          <div class="guest-ring guest-ring-two"></div>
+          <div class="guest-note-card guest-card-one"><i></i><span>Markdown 原样呈现</span><small>只读</small></div>
+          <div class="guest-note-card guest-card-two"><b>⌘ K</b><span>快速搜索全部笔记</span></div>
+          <div class="guest-note-card guest-card-three"><span>正文按需读取</span><small>已缓存 · 随时继续</small></div>
+          <div class="guest-center-mark"><img src="/assets/icon-192.png" width="54" height="54" alt="" /></div>
+        </div>
+      </div>
+      <div class="guest-capabilities" aria-label="产品特点">
+        <span><i aria-hidden="true"></i>账号与知识库隔离</span>
+        <span><i aria-hidden="true"></i>目录、搜索与大纲</span>
+        <span><i aria-hidden="true"></i>按需加载与缓存</span>
+        <span><i aria-hidden="true"></i>开源、自托管</span>
+      </div>
     </section>
     <div class="layout">
       <aside id="library-sidebar" aria-label="文件目录侧栏">
