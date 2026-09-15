@@ -2,6 +2,10 @@
 
 [English](README.md)
 
+**长期线上地址：** [obsidian-cloud-reader.jacky-openbird.workers.dev](https://obsidian-cloud-reader.jacky-openbird.workers.dev)
+
+当前公开实例运行在 Cloudflare Workers 的正式生产域名上，不是临时预览部署。
+
 一个 MIT 开源的 Obsidian 网页阅读器，直接读取阿里云 OSS 中的 Markdown 和附件。
 
 ## 用户流程

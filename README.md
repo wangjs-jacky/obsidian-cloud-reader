@@ -2,6 +2,10 @@
 
 [中文说明](README_CN.md)
 
+**Live site:** [obsidian-cloud-reader.jacky-openbird.workers.dev](https://obsidian-cloud-reader.jacky-openbird.workers.dev)
+
+The public instance runs on its permanent Cloudflare Workers production hostname. It is not a temporary preview deployment.
+
 An MIT-licensed, read-only web reader for Obsidian notes stored in Alibaba Cloud OSS. Each GitHub account starts with an empty library and connects its own bucket. No default account, bucket, credentials, or personal notes are included.
 
 ## Features
