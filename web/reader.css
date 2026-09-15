@@ -609,3 +609,28 @@ header #search-toggle{display:inline-grid}
 #outline a[aria-current]{border-left-color:transparent}
 
 #search-dialog #search-close{position:static;width:36px;height:36px;padding:8px}
+/* Sidebars collapse fully; their existing toggles dock inside the reading panel. */
+.layout,.layout.has-outline{--left:304px;--right:0px;grid-template-columns:var(--left) minmax(0,1fr) var(--right);gap:0;transition:grid-template-columns .28s cubic-bezier(.2,.8,.2,1)}
+.layout.has-outline{--right:244px}
+.layout.library-closed{--left:0px}
+.layout.outline-closed{--right:0px}
+.layout #library-sidebar{grid-column:1;grid-row:1;padding-right:24px;overflow:hidden;transition:opacity .18s,visibility .18s}
+.layout #outline{grid-column:3;grid-row:1;padding-left:24px;overflow:hidden;transition:opacity .18s,visibility .18s}
+.layout.library-closed #library-sidebar,.layout.outline-closed #outline{padding:0;opacity:0;visibility:hidden;pointer-events:none}
+#reading-panel{grid-column:2;grid-row:1;position:relative;min-width:0;min-height:calc(100svh - 200px);background:var(--panel);border:1px solid var(--line);border-radius:18px}
+#reading-panel main{border:0;background:transparent;border-radius:inherit;min-height:inherit;padding-top:64px}
+.panel-dock{position:absolute;top:16px;z-index:1}
+#library-dock{left:16px}#outline-dock{right:16px}
+.layout:not(.has-outline) #outline-dock{display:none}
+.panel-toggle{display:grid;place-items:center;border:0;background:transparent;border-radius:9px}
+.panel-toggle:hover,.panel-toggle:focus-visible{background:var(--soft)}
+.panel-dock .panel-toggle{animation:dock-in .2s ease-out}
+@keyframes dock-in{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@media(max-width:1100px) and (min-width:801px){.layout,.layout.has-outline{--left:236px}.layout.has-outline{--right:196px}.layout.library-closed{--left:0px}.layout.outline-closed{--right:0px}.layout #library-sidebar{padding-right:16px}.layout #outline{padding-left:16px}.layout.library-closed #library-sidebar,.layout.outline-closed #outline{padding:0}}
+@media(max-width:800px){
+ .layout,.layout.has-outline{display:flex;flex-direction:column;gap:16px}
+ .layout #library-sidebar,.layout #outline,#reading-panel{width:100%;padding-left:0;padding-right:0}
+ .layout.library-closed #library-sidebar,.layout.outline-closed #outline{display:none}
+ #reading-panel{order:3}#library-sidebar{order:1}#outline{order:2}
+}
+@media(prefers-reduced-motion:reduce){.layout,.layout #library-sidebar,.layout #outline{transition:none}.panel-dock .panel-toggle{animation:none}}

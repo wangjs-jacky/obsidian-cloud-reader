@@ -3,7 +3,13 @@ export function mountWorkspace(){
   function side(which,closed){
     layout.classList.toggle(which+'-closed',closed)
     const button=$('#toggle-'+which),label=which==='library'?'文件目录':'文章大纲'
-    button.setAttribute('aria-expanded',String(!closed));button.setAttribute('aria-label',(closed?'展开':'收起')+label);button.title=button.getAttribute('aria-label')
+    const sidebar=which==='library'?$('#library-sidebar'):$('#outline')
+    const focused=document.activeElement===button
+    ;(closed?$('#'+which+'-dock'):sidebar.querySelector('.side-heading')).append(button)
+    sidebar.inert=closed
+    button.setAttribute('aria-controls',sidebar.id)
+    if(focused)button.focus({preventScroll:true})
+    button.setAttribute('aria-expanded' ,String(!closed));button.setAttribute('aria-label',(closed?'展开':'收起')+label);button.title=button.getAttribute('aria-label')
     localStorage.setItem('reader-'+which+'-closed',String(closed))
   }
   for(const which of ['library','outline']){
