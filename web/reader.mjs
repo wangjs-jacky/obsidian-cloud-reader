@@ -1,3 +1,4 @@
+import { mountOutline } from "./outline.mjs"
 import MarkdownIt from "markdown-it"
 import DOMPurify from "dompurify"
 import { NoteTree } from "./tree.mjs"
@@ -26,6 +27,7 @@ async function api(path, options = {}) {
   if (!r.ok) throw Error(body.error || "请求失败")
   return body
 }
+mountOutline($("#main"), $("#outline"))
 const tree = new NoteTree($("#tree"), api, (key) => note(key))
 let treeVersion = null,
   lastStatus = {},
