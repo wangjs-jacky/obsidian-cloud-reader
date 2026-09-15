@@ -1,10 +1,12 @@
+import {bounceMarker} from "./components/bounce-marker.mjs"
 export function mountOutline(main, panel) {
-  let headings=[],links=[],frame=0
+  let headings=[],links=[],frame=0,moveMarker=()=>{}
   const details=panel.querySelector('details'),nav=panel.querySelector('nav')
   function highlight(){
     frame=0
     let active=headings[0]
     for(const h of headings){if(h.getBoundingClientRect().top<=110)active=h;else break}
+    moveMarker(links[headings.indexOf(active)])
     links.forEach((a,i)=>{if(headings[i]===active)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current')})
   }
   function update(){
@@ -21,6 +23,7 @@ export function mountOutline(main, panel) {
       a.onclick=e=>{e.preventDefault();h.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});h.setAttribute('tabindex','-1');h.focus({preventScroll:true});if(matchMedia('(max-width:1100px)').matches)details.open=false}
       nav.append(a);links.push(a)
     })
+    moveMarker=bounceMarker(nav)
     details.open=!matchMedia('(max-width:1100px)').matches
     highlight()
   }

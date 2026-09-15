@@ -1,3 +1,4 @@
+import { mountIcons } from "./icons.mjs"
 import { mountWorkspace } from "./workspace.mjs"
 import { mountOutline } from "./outline.mjs"
 import MarkdownIt from "markdown-it"
@@ -28,6 +29,7 @@ async function api(path, options = {}) {
   if (!r.ok) throw Error(body.error || "请求失败")
   return body
 }
+mountIcons()
 mountWorkspace()
 mountOutline($("#main"), $("#outline"))
 const tree = new NoteTree($("#tree"), api, (key) => note(key))
@@ -62,11 +64,11 @@ function status(s) {
 }
 function switchView() {
   const searching = !!$("#search").value.trim()
-  $("#tree").hidden = searching
+  $("#tree").hidden = false
   $("#notes").hidden = !searching
   $("#search-pager").hidden = !searching
-  $("#clear-search").hidden = !searching
-  $("#view-label").textContent = searching ? "搜索结果 · 文件名与路径" : "文件目录"
+  $("#clear-search").hidden = true
+  $("#view-label").textContent = "文件目录"
   return searching
 }
 async function catalog() {
@@ -82,10 +84,11 @@ async function catalog() {
     )
     if (run !== catalogRun) return
     if(s.bound===false){showEmpty(true);return}
-    bound=true;$("#refresh").disabled=false;$("#settings").textContent='连接设置'
+    bound=true;$("#refresh").disabled=false;$("#settings").title='连接设置'
     total = s.total
     status(s)
     if (searching) {
+      $("#search-status").textContent=`找到 ${s.total} 篇笔记`
       $("#notes").innerHTML =
         s.items
           .map(
@@ -202,6 +205,7 @@ $("#notes").addEventListener("click", (e) => {
   const a = e.target.closest("a[data-key]")
   if (a) {
     e.preventDefault()
+    $("#search-dialog").close()
     note(a.dataset.key)
   }
 })
@@ -229,6 +233,8 @@ $("#main").addEventListener("click", async (e) => {
 let timer
 $("#search").addEventListener("input", () => {
   clearTimeout(timer)
+  $("#search-status").textContent=$("#search").value.trim()?"正在搜索…":"输入关键词查找笔记"
+  $("#notes").replaceChildren()
   timer = setTimeout(() => {
     offset = 0
     catalog()
@@ -271,6 +277,8 @@ $("#theme").onclick = () => {
   localStorage.setItem("reader-theme", document.body.classList.contains("dark") ? "dark" : "light")
 }
 if (localStorage.getItem("reader-theme") === "dark") document.body.classList.add("dark")
+document.addEventListener('reader:modal-open',()=>lockPageScroll())
+document.addEventListener('reader:modal-close',()=>unlockPageScroll())
 let modalScroll=null
 function lockPageScroll(){
   if(modalScroll)return
@@ -401,6 +409,6 @@ try{
     $("#account-name").textContent=websiteSession.name||websiteSession.email||'我的账号'
     const config=await api('/api/settings')
     if(!config.configured)showEmpty(true)
-    else {bound=true;$("#settings").textContent='连接设置';$("#refresh").disabled=false;await catalog();const initial=new URL(location.href).searchParams.get('note');if(initial){await note(initial,false);await tree.reveal(initial)}}
+    else {bound=true;$("#settings").title='连接设置';$("#refresh").disabled=false;await catalog();const initial=new URL(location.href).searchParams.get('note');if(initial){await note(initial,false);await tree.reveal(initial)}}
   }
 }catch(e){$("#main").innerHTML='<p class="error">'+escape(e.message)+'</p>';$("#count").textContent='账号服务暂不可用'}

@@ -564,17 +564,6 @@ header nav{flex-wrap:wrap;justify-content:flex-end}
 .side-content:has(#notes:not([hidden])) #view-label{display:block}
 .side-content>details{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
 .side-content>details>summary{cursor:pointer}
-#top-search{display:flex;align-items:center;gap:0;border-radius:12px;transition:background .25s,box-shadow .25s}
-#search-toggle{display:flex;align-items:center;gap:8px;height:40px}
-#search-toggle svg{width:18px;height:18px}
-#search-toggle kbd{font:11px system-ui;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 4px}
-#search-field{display:flex;align-items:center;position:relative;max-width:0;opacity:0;overflow:hidden;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s}
-#search-field input{width:260px;padding-right:36px;height:40px;border:0;background:transparent}
-#search-close{position:absolute;right:5px;padding:0;width:28px;height:28px;border:0;background:transparent;font-size:22px}
-#top-search.expanded{background:var(--panel);box-shadow:0 0 0 1px var(--accent),0 4px 18px #263b330d}
-#top-search.expanded #search-field{max-width:260px;opacity:1}
-#top-search.expanded #search-toggle{border-color:transparent;background:transparent}
-#top-search.expanded #search-toggle span,#top-search.expanded kbd{display:none}
 @media(min-width:1101px){.layout main{grid-column:auto;grid-row:auto}}
 @media(max-width:1100px){
  .layout,.layout.has-outline{--left:220px;--right:180px;gap:16px}
@@ -582,7 +571,6 @@ header nav{flex-wrap:wrap;justify-content:flex-end}
  .layout.has-outline{grid-template-columns:var(--left) minmax(0,1fr) var(--right)}
  .layout #library-sidebar,.layout main,.layout #outline{grid-column:auto;grid-row:auto}
  #outline>details>summary{display:block}
- #search-field input{width:210px}#top-search.expanded #search-field{max-width:210px}
 }
 @media(max-width:800px){
  header{padding:16px;flex-wrap:wrap;gap:12px}header nav{gap:8px;justify-content:flex-start}
@@ -596,3 +584,28 @@ header nav{flex-wrap:wrap;justify-content:flex-end}
  #tree{max-height:300px}.side-heading{margin-bottom:6px}
 }
 @media(prefers-reduced-motion:reduce){#search-field,.panel-toggle,#top-search,#outline a{transition:none}}
+header .icon-button,.icon-button{display:inline-grid;place-items:center;width:40px;height:40px;padding:9px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);flex-shrink:0}
+.icon-button[hidden]{display:none}
+.icon-button:hover{background:var(--soft);color:var(--accent);text-decoration:none}
+.icon-button svg{width:20px;height:20px;pointer-events:none}
+header #search-toggle{display:inline-grid}
+.brand{position:relative;padding-left:42px}.brand>img{position:absolute;left:0;top:4px;border-radius:8px}
+#search-dialog{width:min(640px,calc(100% - 32px));max-width:640px;max-height:calc(100dvh - 64px);padding:24px;overflow:auto;overscroll-behavior:contain}
+#search-dialog[open]{animation:search-enter .2s cubic-bezier(.2,.8,.2,1)}
+.search-dialog-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.search-dialog-header h2{font-size:20px;margin:0}
+#search-dialog #search{width:100%;height:48px;border:1px solid var(--line);border-radius:10px;outline:none;padding:10px 14px;background:var(--bg)}
+#search-dialog #search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--soft)}
+#search-dialog #search::-webkit-search-cancel-button{-webkit-appearance:none}
+#search-status{min-height:22px;margin:12px 0;color:var(--muted)}
+#search-dialog #notes{max-height:48dvh;overflow:auto;overscroll-behavior:contain}
+#search-dialog #notes a{padding:12px;border:1px solid transparent;transition:background .15s}
+#search-dialog #notes a:hover,#search-dialog #notes a:focus{background:var(--soft);outline:none;border-color:var(--line);text-decoration:none}
+#search-dialog footer{font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:16px}
+@keyframes search-enter{from{opacity:0;transform:translateY(-12px) scale(.98)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#search-dialog[open]{animation:none}}
+#outline nav{position:relative;padding-left:10px;border-left:0}
+.bounce-marker{position:absolute;left:0;top:0;width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0;pointer-events:none}
+#outline a[aria-current]{border-left-color:transparent}
+
+#search-dialog #search-close{position:static;width:36px;height:36px;padding:8px}

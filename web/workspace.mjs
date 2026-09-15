@@ -1,5 +1,5 @@
 export function mountWorkspace(){
-  const $=s=>document.querySelector(s),layout=$('.layout'),search=$('#search'),box=$('#top-search')
+  const $=s=>document.querySelector(s),layout=$('.layout'),search=$('#search')
   function side(which,closed){
     layout.classList.toggle(which+'-closed',closed)
     const button=$('#toggle-'+which),label=which==='library'?'文件目录':'文章大纲'
@@ -10,19 +10,28 @@ export function mountWorkspace(){
     side(which,localStorage.getItem('reader-'+which+'-closed')==='true')
     $('#toggle-'+which).onclick=()=>side(which,!layout.classList.contains(which+'-closed'))
   }
+  const dialog=$('#search-dialog')
   function open(){
-    box.classList.add('expanded');$('#search-field').inert=false;$('#search-toggle').setAttribute('aria-expanded','true');search.focus()
+    if(dialog.open)return
+    dialog.showModal();search.focus()
+    document.dispatchEvent(new Event('reader:modal-open'))
   }
-  function close(){
-    box.classList.remove('expanded');$('#search-field').inert=true;$('#search-toggle').setAttribute('aria-expanded','false');$('#search-toggle').focus()
-    if(search.value){search.value='';search.dispatchEvent(new Event('input',{bubbles:true}))}
-  }
+  function close(){dialog.close()}
+  dialog.addEventListener('close',()=>{
+    document.dispatchEvent(new Event('reader:modal-close'))
+    search.value='';search.dispatchEvent(new Event('input',{bubbles:true}));$('#search-toggle').focus()
+  })
   $('#search-toggle').onclick=open;$('#search-close').onclick=close
-  search.addEventListener('input',()=>{if(search.value.trim())side('library',false)})
+  dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close()}})
+  dialog.addEventListener('keydown',e=>{
+    const links=[...dialog.querySelectorAll('#notes a')]
+    if(!links.length)return
+    const index=links.indexOf(document.activeElement)
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();links[index<0?(e.key==='ArrowDown'?0:links.length-1):(index+(e.key==='ArrowDown'?1:-1)+links.length)%links.length].focus()}
+    if(e.key==='Enter'&&document.activeElement===search){e.preventDefault();links[0].click()}
+  })
   document.addEventListener('keydown',e=>{
     if(document.querySelector('dialog[open]'))return
     if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open()}
-    if(e.key==='Escape'&&box.classList.contains('expanded')){e.preventDefault();close()}
   })
-  if(!/Mac|iPhone|iPad/.test(navigator.platform))$('#search-toggle kbd').textContent='Ctrl K'
 }

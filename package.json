@@ -12,7 +12,9 @@
     "aws4fetch": "^1.0.20",
     "dompurify": "^3.4.15",
     "fast-xml-parser": "^5.11.1",
-    "markdown-it": "^15.0.2"
+    "lucide": "^1.46.0",
+    "markdown-it": "^15.0.2",
+    "simple-icons": "^16.31.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
