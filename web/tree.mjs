@@ -126,7 +126,7 @@ export class NoteTree {
     const folders = data.folders
       .map((f) => {
         const open = this.expanded.has(f.key)
-        return `<li class="folder"><button class="folder-row" data-folder="${esc(f.key)}" aria-expanded="${open}"><span class="chevron" aria-hidden="true">${open ? "⌄" : "›"}</span><span class="folder-name">${esc(f.name)}</span><span class="folder-count" title="包含 ${f.count} 篇笔记">${f.count}</span></button>${open ? `<ul class="branch">${this.branch(f.key)}</ul>` : ""}</li>`
+        return `<li class="folder"><button class="folder-row" data-folder="${esc(f.key)}" aria-expanded="${open}"><span class="chevron" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 4 4 4-4 4"/></svg></span><span class="folder-name">${esc(f.name)}</span><span class="folder-count" title="包含 ${f.count} 篇笔记">${f.count}</span></button>${open ? `<ul class="branch">${this.branch(f.key)}</ul>` : ""}</li>`
       })
       .join("")
     const files = [...new Map(data.files.map((f) => [f.key, f])).values()]
