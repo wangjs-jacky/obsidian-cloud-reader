@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/reader.css" />
     <script type="module" src="/reader.js"></script>
   </head>
-  <body>
+  <body class="session-pending">
     <header>
       <a href="/" class="brand"><img src="/assets/icon-192.png" width="32" height="32" alt=""/>随身笔记<span>我的知识库</span></a>
       <nav aria-label="顶部导航">
@@ -21,6 +21,16 @@
         <form id="logout" hidden method="post" action="/auth/logout"><button class="icon-button" aria-label="退出登录" title="退出登录">退出登录</button></form>
       </nav>
     </header>
+    <p id="session-status" role="status">正在连接你的阅读空间…</p>
+    <section id="guest-home" hidden aria-labelledby="guest-title">
+      <img class="guest-icon" src="/assets/icon-192.png" width="76" height="76" alt="" />
+      <p class="guest-eyebrow">你的笔记，随身可读</p>
+      <h1 id="guest-title">让知识，陪你走得更远。</h1>
+      <p class="guest-description">连接自己的 Obsidian 知识库，<br />在浏览器里，继续阅读和探索。</p>
+      <a class="guest-login" href="/auth/login">使用 GitHub 登录 <span aria-hidden="true">↗</span></a>
+      <p class="guest-note">首次登录自动创建账号，再绑定自己的 OSS。</p>
+      <div class="guest-features"><div><strong>自己的知识库</strong><p>每个账号独立连接</p></div><div><strong>专注阅读</strong><p>目录、搜索与文章大纲</p></div><div><strong>随时继续</strong><p>按需加载，复用阅读缓存</p></div></div>
+    </section>
     <div class="layout">
       <aside id="library-sidebar" aria-label="文件目录侧栏">
         <div class="side-heading"><strong>文件目录</strong><button id="toggle-library" class="panel-toggle" aria-label="收起文件目录" aria-expanded="true" title="收起文件目录">◧</button></div>

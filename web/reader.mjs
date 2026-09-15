@@ -403,6 +403,11 @@ function showEmpty(authenticated){
 }
 try{
   const s=await api('/auth/session');websiteSession=s.authenticated?s.user:null
+  document.body.classList.remove('session-pending')
+  document.body.classList.toggle('guest',!websiteSession)
+  $("#guest-home").hidden=!!websiteSession
+  $("#session-status").hidden=true
+  $("#search-toggle").hidden=!websiteSession
   $("#login").hidden=!!websiteSession;$("#logout").hidden=!websiteSession;$("#settings").hidden=!websiteSession;$("#account-name").hidden=!websiteSession
   if(!websiteSession)showEmpty(false)
   else{
@@ -411,4 +416,4 @@ try{
     if(!config.configured)showEmpty(true)
     else {bound=true;$("#settings").title='连接设置';$("#refresh").disabled=false;await catalog();const initial=new URL(location.href).searchParams.get('note');if(initial){await note(initial,false);await tree.reveal(initial)}}
   }
-}catch(e){$("#main").innerHTML='<p class="error">'+escape(e.message)+'</p>';$("#count").textContent='账号服务暂不可用'}
+}catch(e){$("#session-status").hidden=false;$("#session-status").textContent='暂时无法连接，请刷新重试。';$("#main").innerHTML='<p class="error">'+escape(e.message)+'</p>';$("#count").textContent='账号服务暂不可用'}

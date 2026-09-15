@@ -43,7 +43,7 @@ export function mountWorkspace(){
   }
   const dialog=$('#search-dialog')
   function open(){
-    if(dialog.open)return
+    if(dialog.open||document.body.classList.contains('guest')||document.body.classList.contains('session-pending'))return
     dialog.showModal();search.focus()
     document.dispatchEvent(new Event('reader:modal-open'))
   }
