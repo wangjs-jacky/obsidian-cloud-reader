@@ -11,7 +11,7 @@ export function createApp(auth){return {async fetch(request,env){
   if(url.pathname.startsWith('/api/')){
     if(!session||!sessionId.test(session.userId||''))return json({error:'请先登录网站账号'},401)
     if(!env.LIBRARY)return json({error:'Storage not configured'},503)
-    if(!['GET','HEAD'].includes(request.method)&&!(request.method==='POST'&&['/api/settings','/api/refresh'].includes(url.pathname)))return json({error:'Method not allowed'},405)
+    if(!['GET','HEAD'].includes(request.method)&&!(request.method==='POST'&&['/api/settings','/api/settings/reveal','/api/refresh'].includes(url.pathname)))return json({error:'Method not allowed'},405)
     if(request.method==='POST'){
       const reader=request.body?.getReader(),chunks=[];let size=0
       if(reader)while(true){const{value,done}=await reader.read();if(done)break;size+=value.byteLength;if(size>4096){await reader.cancel();return json({error:'Request too large'},413)}chunks.push(value)}

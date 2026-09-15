@@ -69,7 +69,7 @@
         ><label>Bucket<input name="bucket" required /></label
         ><label>Region<input name="region" placeholder="cn-shanghai" required /></label
         ><label>目录前缀（可留空）<input name="prefix" /></label
-        ><label>Access Key ID<input name="accessKeyId" autocomplete="off" required /></label
+        ><label>Access Key ID<input name="accessKeyId" type="password" autocomplete="off" required /></label
         ><label
           >Access Key Secret<input
             name="secretAccessKey"
@@ -77,7 +77,8 @@
             autocomplete="new-password"
             required
         /></label>
-        <p class="muted">密钥仅提交到已登录的服务端，保存后不会回显。更换连接会清空旧缓存。</p>
+        <button type="button" id="reveal-keys" aria-pressed="false">查看密钥</button>
+        <p class="muted">密钥默认隐藏，点击后可查看。已保存的密钥留空表示保留；更换连接会清空旧缓存。</p>
         <p id="config-status" role="status"></p>
         <div class="actions">
           <button type="button" id="cancel">取消</button><button type="submit">验证并保存</button>

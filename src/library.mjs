@@ -428,6 +428,12 @@ export class Library {
     const url = new URL(request.url)
     if (this.changing) return json({ error: "正在保存配置，请稍后重试" }, 503)
     try {
+      if (url.pathname === "/api/settings/reveal") {
+        if(request.method!=="POST")return json({error:"Method not allowed"},405)
+        const c=(await this.source())?.config
+        if(!c)return json({error:"请先绑定 OSS"},409)
+        return json({accessKeyId:c.accessKeyId,secretAccessKey:c.secretAccessKey})
+      }
       if (url.pathname === "/api/settings") {
         if (request.method === "GET") {
           const source=await this.source()
@@ -444,7 +450,11 @@ export class Library {
         if (request.method === "POST") {
           const text = await request.text()
           if (text.length > 4096) return json({ error: "配置过大" }, 413)
-          const config = validateConfig(JSON.parse(text))
+          const input = JSON.parse(text)
+          const saved = (await this.source())?.config
+          for(const field of ["accessKeyId","secretAccessKey"])
+            if(!input[field]&&saved)input[field]=saved[field]
+          const config = validateConfig(input)
           this.changing = true
           try {
             await Promise.allSettled([...this.jobs.values()])

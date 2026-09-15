@@ -267,20 +267,45 @@ $("#theme").onclick = () => {
   localStorage.setItem("reader-theme", document.body.classList.contains("dark") ? "dark" : "light")
 }
 if (localStorage.getItem("reader-theme") === "dark") document.body.classList.add("dark")
+let configuredKeys=false, keyRequest=0
+const keyFields=["accessKeyId","secretAccessKey"]
+function hideKeys(){
+  keyRequest++
+  for(const name of keyFields)$("#config-form").elements[name].type="password"
+  $("#reveal-keys").textContent="查看密钥"
+  $("#reveal-keys").setAttribute("aria-pressed","false")
+  $("#reveal-keys").disabled=false
+}
+$("#config").addEventListener("close",()=>{
+  hideKeys();$("#config-form").reset();$("#config-status").textContent=""
+})
 $("#settings").onclick = async () => {
   try {
     const c = await api("/api/settings")
+    $("#config-form").reset();hideKeys();configuredKeys=!!c.configured
     for (const name of ["endpoint", "bucket", "region", "prefix"])
       $("#config-form").elements[name].value = c[name] || ""
+    for(const name of keyFields){const field=$("#config-form").elements[name];field.required=!configuredKeys;field.placeholder=configuredKeys?"••••••••（已保存）":""}
+    $("#config-status").textContent=""
     $("#config").showModal()
-  } catch (e) {
-    $("#sync").textContent = e.message
-  }
+  } catch (e) { $("#sync").textContent = e.message }
 }
-$("#cancel").onclick = () => {
-  $("#config").close()
-  $("#config-form").reset()
+$("#reveal-keys").onclick=async()=>{
+  if($("#reveal-keys").getAttribute("aria-pressed")==="true"){hideKeys();return}
+  const run=++keyRequest,button=$("#reveal-keys")
+  button.disabled=true
+  try{
+    if(configuredKeys&&keyFields.some(name=>!$("#config-form").elements[name].value)){
+      const keys=await api("/api/settings/reveal",{method:"POST"})
+      if(run!==keyRequest||!$("#config").open)return
+      for(const name of keyFields)if(!$("#config-form").elements[name].value)$("#config-form").elements[name].value=keys[name]
+    }
+    for(const name of keyFields)$("#config-form").elements[name].type="text"
+    button.textContent="隐藏密钥";button.setAttribute("aria-pressed","true")
+  }catch(e){if(run===keyRequest)$("#config-status").textContent=e.message}
+  finally{if(run===keyRequest)button.disabled=false}
 }
+$("#cancel").onclick = () => $("#config").close()
 $("#config-form").onsubmit = async (e) => {
   e.preventDefault()
   const b = e.submitter

@@ -26,7 +26,7 @@ Use Node.js 24 and a Cloudflare account with Workers and SQLite Durable Objects 
 
 For local development, use an appropriate local OAuth callback and put secrets in a gitignored `.dev.vars` file. Production cookies require HTTPS.
 
-Live browser acceptance verified GitHub login, a new empty account, binding OSS, reading a real note, logout protection, and reconnecting to the existing cached catalog on subsequent login. All 36 automated tests pass. Account isolation uses two synthetic identities in automated tests; a second real GitHub account has not been manually tested.
+Live browser acceptance verified GitHub login, a new empty account, binding OSS, reading a real note, logout protection, and reconnecting to the existing cached catalog on subsequent login. All 38 automated tests pass. Account isolation uses two synthetic identities in automated tests; a second real GitHub account has not been manually tested.
 
 ## OSS connection
 
@@ -37,6 +37,8 @@ Search currently covers filenames and paths, not all note bodies. Metadata refre
 ## Security and privacy boundary
 
 Anonymous visitors see a generic empty shell. Every library API requires a valid website session. A new account has no OSS connection; there is no global fallback bucket. Settings and cached content are isolated in one SQLite Durable Object per account.
+
+Saved credentials are masked in settings. An authenticated, same-origin reveal action displays the complete keys; closing the dialog clears them from the fields. Blank key fields on save retain the existing credentials.
 
 OSS credentials are encrypted at rest, but this is not end-to-end encryption: the hosting operator's backend decrypts credentials to fetch notes, and cached note content is accessible to that backend. GitHub access tokens are used only to resolve identity and are not persisted; no repository scope is requested. Never commit `.private`, `.dev.vars`, deployment secrets, personal notes, or generated private content.
 
