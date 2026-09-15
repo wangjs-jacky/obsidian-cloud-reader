@@ -538,3 +538,8 @@ article :is(h1,h2,h3,h4,h5,h6){scroll-margin-top:32px}
  .has-outline #outline{grid-column:1;grid-row:2}
  .has-outline main{grid-column:1;grid-row:3}
 }
+
+html{scrollbar-gutter:stable}
+html.modal-open{overflow:hidden;overscroll-behavior:none}
+html.modal-open body{position:fixed;width:100%;overflow:hidden}
+#config{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}

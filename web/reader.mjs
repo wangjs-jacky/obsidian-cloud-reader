@@ -269,6 +269,21 @@ $("#theme").onclick = () => {
   localStorage.setItem("reader-theme", document.body.classList.contains("dark") ? "dark" : "light")
 }
 if (localStorage.getItem("reader-theme") === "dark") document.body.classList.add("dark")
+let modalScroll=null
+function lockPageScroll(){
+  if(modalScroll)return
+  modalScroll={x:scrollX,y:scrollY}
+  document.body.style.top=`-${modalScroll.y}px`
+  document.body.style.left=`-${modalScroll.x}px`
+  document.documentElement.classList.add('modal-open')
+}
+function unlockPageScroll(){
+  if(!modalScroll)return
+  const position=modalScroll;modalScroll=null
+  document.documentElement.classList.remove('modal-open')
+  document.body.style.removeProperty('top');document.body.style.removeProperty('left')
+  window.scrollTo({left:position.x,top:position.y,behavior:'instant'})
+}
 let configuredKeys=false, keyRequest=0
 const keyFields=["accessKeyId","secretAccessKey"]
 function eyeState(name,visible){
@@ -284,7 +299,7 @@ function hideKeys(){
   for(const name of keyFields){eyeState(name,false);document.querySelector(`[data-key="${name}"]`).disabled=false}
 }
 $("#config").addEventListener("close",()=>{
-  hideKeys();$("#config-form").reset();$("#config-status").textContent=""
+  unlockPageScroll();hideKeys();$("#config-form").reset();$("#config-status").textContent=""
 })
 $("#settings").onclick = async () => {
   try {
@@ -294,8 +309,9 @@ $("#settings").onclick = async () => {
       $("#config-form").elements[name].value = c[name] || ""
     for(const name of keyFields){const field=$("#config-form").elements[name];field.required=!configuredKeys;field.placeholder=configuredKeys?"••••••••":""}
     $("#config-status").textContent=""
+    lockPageScroll()
     $("#config").showModal()
-  } catch (e) { $("#sync").textContent = e.message }
+  } catch (e) { unlockPageScroll();$("#sync").textContent = e.message }
 }
 for(const name of keyFields)document.querySelector(`[data-key="${name}"]`).onclick=async()=>{
   const button=document.querySelector(`[data-key="${name}"]`),field=$("#config-form").elements[name]
