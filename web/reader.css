@@ -500,3 +500,11 @@ progress:indeterminate::-webkit-progress-bar {
   }
 }
 .account-link{display:inline-block;padding:6px 13px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--accent)}#account-name{font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.welcome #bind-oss{margin:16px 0;background:var(--accent);color:var(--bg);padding:10px 20px}
+
+.secret-input{position:relative;margin-bottom:14px}
+.secret-input input{width:100%;padding-right:48px;margin-bottom:0}
+.secret-input .key-eye{position:absolute;right:5px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:36px;height:36px;padding:8px;border:0;background:transparent;color:var(--muted);border-radius:6px}
+.key-eye svg{width:20px;height:20px;pointer-events:none}
+.key-eye:hover{color:var(--accent);background:var(--bg)}
+.key-eye:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.key-eye[aria-pressed="true"] .eye-slash{display:none}

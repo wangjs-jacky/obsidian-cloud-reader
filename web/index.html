@@ -69,16 +69,9 @@
         ><label>Bucket<input name="bucket" required /></label
         ><label>Region<input name="region" placeholder="cn-shanghai" required /></label
         ><label>目录前缀（可留空）<input name="prefix" /></label
-        ><label>Access Key ID<input name="accessKeyId" type="password" autocomplete="off" required /></label
-        ><label
-          >Access Key Secret<input
-            name="secretAccessKey"
-            type="password"
-            autocomplete="new-password"
-            required
-        /></label>
-        <button type="button" id="reveal-keys" aria-pressed="false">查看密钥</button>
-        <p class="muted">密钥默认隐藏，点击后可查看。已保存的密钥留空表示保留；更换连接会清空旧缓存。</p>
+        ><label for="accessKeyId">Access Key ID</label><div class="secret-input"><input id="accessKeyId" name="accessKeyId" type="password" autocomplete="new-password" required /><button type="button" class="key-eye" data-key="accessKeyId" aria-label="显示 Access Key ID" title="显示 Access Key ID" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m3 3 18 18"/></svg></button></div>
+<label for="secretAccessKey">Access Key Secret</label><div class="secret-input"><input id="secretAccessKey" name="secretAccessKey" type="password" autocomplete="new-password" required /><button type="button" class="key-eye" data-key="secretAccessKey" aria-label="显示 Access Key Secret" title="显示 Access Key Secret" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="eye-slash" d="m3 3 18 18"/></svg></button></div>
+        <p class="muted">点击输入框右侧的小眼睛可显示或隐藏密钥。已保存的密钥留空表示保留；更换连接会清空旧缓存。</p>
         <p id="config-status" role="status"></p>
         <div class="actions">
           <button type="button" id="cancel">取消</button><button type="submit">验证并保存</button>

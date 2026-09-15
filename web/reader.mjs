@@ -269,12 +269,17 @@ $("#theme").onclick = () => {
 if (localStorage.getItem("reader-theme") === "dark") document.body.classList.add("dark")
 let configuredKeys=false, keyRequest=0
 const keyFields=["accessKeyId","secretAccessKey"]
+function eyeState(name,visible){
+  const button=document.querySelector(`[data-key="${name}"]`)
+  const label=name==="accessKeyId"?"Access Key ID":"Access Key Secret"
+  $("#config-form").elements[name].type=visible?"text":"password"
+  button.setAttribute("aria-pressed",String(visible))
+  button.setAttribute("aria-label",(visible?"隐藏 ":"显示 ")+label)
+  button.title=button.getAttribute("aria-label")
+}
 function hideKeys(){
   keyRequest++
-  for(const name of keyFields)$("#config-form").elements[name].type="password"
-  $("#reveal-keys").textContent="查看密钥"
-  $("#reveal-keys").setAttribute("aria-pressed","false")
-  $("#reveal-keys").disabled=false
+  for(const name of keyFields){eyeState(name,false);document.querySelector(`[data-key="${name}"]`).disabled=false}
 }
 $("#config").addEventListener("close",()=>{
   hideKeys();$("#config-form").reset();$("#config-status").textContent=""
@@ -290,18 +295,18 @@ $("#settings").onclick = async () => {
     $("#config").showModal()
   } catch (e) { $("#sync").textContent = e.message }
 }
-$("#reveal-keys").onclick=async()=>{
-  if($("#reveal-keys").getAttribute("aria-pressed")==="true"){hideKeys();return}
-  const run=++keyRequest,button=$("#reveal-keys")
+for(const name of keyFields)document.querySelector(`[data-key="${name}"]`).onclick=async()=>{
+  const button=document.querySelector(`[data-key="${name}"]`),field=$("#config-form").elements[name]
+  if(field.type==="text"){eyeState(name,false);return}
+  const run=keyRequest
   button.disabled=true
   try{
-    if(configuredKeys&&keyFields.some(name=>!$("#config-form").elements[name].value)){
+    if(configuredKeys&&!field.value){
       const keys=await api("/api/settings/reveal",{method:"POST"})
       if(run!==keyRequest||!$("#config").open)return
-      for(const name of keyFields)if(!$("#config-form").elements[name].value)$("#config-form").elements[name].value=keys[name]
+      if(!field.value)field.value=keys[name]
     }
-    for(const name of keyFields)$("#config-form").elements[name].type="text"
-    button.textContent="隐藏密钥";button.setAttribute("aria-pressed","true")
+    eyeState(name,true)
   }catch(e){if(run===keyRequest)$("#config-status").textContent=e.message}
   finally{if(run===keyRequest)button.disabled=false}
 }
