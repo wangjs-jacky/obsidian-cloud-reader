@@ -10,19 +10,28 @@
   <body>
     <header>
       <a href="/" class="brand">随身笔记<span>我的知识库</span></a>
-      <nav>
+      <nav aria-label="顶部导航">
+        <div id="top-search"><button id="search-toggle" aria-label="展开搜索笔记" aria-expanded="false" aria-controls="search-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>⌘ K</kbd></button><div id="search-field" inert><input id="search" type="search" aria-label="搜索笔记" placeholder="搜索标题或路径" autocomplete="off"/><button id="search-close" aria-label="收起搜索">×</button></div></div>
         <button id="theme" aria-label="切换深浅主题">◐ 主题</button
         ><button id="settings" hidden>绑定 OSS</button><a id="login" class="account-link" href="/auth/login">登录 / 注册</a><span id="account-name" hidden></span>
         <form id="logout" hidden method="post" action="/auth/logout"><button>退出登录</button></form>
       </nav>
     </header>
     <div class="layout">
-      <aside>
-        <h1>从一篇笔记开始。</h1>
-        <p class="muted">把零散的想法，重新连接起来。</p>
-        <label class="search"
-          >搜索笔记<input id="search" type="search" placeholder="搜索标题或路径" autocomplete="off"
-        /></label>
+      <aside id="library-sidebar" aria-label="文件目录侧栏">
+        <div class="side-heading"><strong>文件目录</strong><button id="toggle-library" class="panel-toggle" aria-label="收起文件目录" aria-expanded="true" title="收起文件目录">◧</button></div>
+        <div class="side-content">
+        <div class="tree-toolbar">
+          <span id="view-label">文件目录</span><button id="clear-search" hidden>返回目录</button
+          ><button id="locate" disabled>定位当前笔记</button>
+        </div>
+        <nav id="tree" aria-label="笔记目录"></nav>
+        <ul id="notes" hidden aria-label="搜索结果"></ul>
+        <div class="pager" id="search-pager" hidden>
+          <button id="prev">上一页</button><span id="page"></span><button id="next">下一页</button>
+        </div>
+        <details>
+          <summary>同步与缓存</summary>
         <div class="catalog-info">
           <span id="count">尚未绑定知识库</span><button id="refresh" disabled>检查更新</button>
         </div>
@@ -34,19 +43,10 @@
           <progress id="sync-progress" max="100" aria-label="目录更新进度"></progress>
           <p id="progress-detail"></p>
         </section>
-        <div class="tree-toolbar">
-          <span id="view-label">文件目录</span><button id="clear-search" hidden>返回目录</button
-          ><button id="locate" disabled>定位当前笔记</button>
-        </div>
-        <nav id="tree" aria-label="笔记目录"></nav>
-        <ul id="notes" hidden aria-label="搜索结果"></ul>
-        <div class="pager" id="search-pager" hidden>
-          <button id="prev">上一页</button><span id="page"></span><button id="next">下一页</button>
-        </div>
-        <details>
-          <summary>缓存状态</summary>
+
           <p id="cache"></p>
         </details>
+        </div>
       </aside>
       <main id="main">
         <div class="welcome">
@@ -56,7 +56,7 @@
           <p class="muted">内容按需加载，已读内容会复用云端缓存。</p>
         </div>
       </main>
-      <aside id="outline" hidden aria-label="文章大纲"><details open><summary>文章大纲</summary><nav aria-label="文章标题"></nav></details></aside>
+      <aside id="outline" hidden aria-label="文章大纲"><div class="side-heading"><strong>文章大纲</strong><button id="toggle-outline" class="panel-toggle" aria-label="收起文章大纲" aria-expanded="true" title="收起文章大纲">◨</button></div><details open><summary>展开文章大纲</summary><nav aria-label="文章标题"></nav></details></aside>
     </div>
     <dialog id="config">
       <form id="config-form">
