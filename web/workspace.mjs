@@ -1,3 +1,4 @@
+import {panelIcon} from './icons.mjs'
 export function mountWorkspace(){
   const $=s=>document.querySelector(s),layout=$('.layout'),search=$('#search')
   function side(which,closed){
@@ -8,6 +9,7 @@ export function mountWorkspace(){
     ;(closed?$('#'+which+'-dock'):sidebar.querySelector('.side-heading')).append(button)
     sidebar.inert=closed
     button.setAttribute('aria-controls',sidebar.id)
+    panelIcon(button,which,closed)
     if(focused)button.focus({preventScroll:true})
     button.setAttribute('aria-expanded' ,String(!closed));button.setAttribute('aria-label',(closed?'展开':'收起')+label);button.title=button.getAttribute('aria-label')
     localStorage.setItem('reader-'+which+'-closed',String(closed))
@@ -15,6 +17,29 @@ export function mountWorkspace(){
   for(const which of ['library','outline']){
     side(which,localStorage.getItem('reader-'+which+'-closed')==='true')
     $('#toggle-'+which).onclick=()=>side(which,!layout.classList.contains(which+'-closed'))
+  }
+  for(const which of ['library','outline']){
+    const handle=$('#resize-'+which),property='--'+which+'-width'
+    const saved=Number(localStorage.getItem('reader-'+which+'-width'))
+    if(saved>=180&&saved<=420)layout.style.setProperty(property,saved+'px')
+    const width=()=>parseFloat(getComputedStyle(layout).getPropertyValue(property))||(which==='library'?280:220)
+    function set(value){
+      const other=which==='library'?'outline':'library'
+      const otherVisible=!layout.classList.contains(other+'-closed')&&(other==='library'||layout.classList.contains('has-outline'))
+      const otherWidth=otherVisible?(parseFloat(getComputedStyle(layout).getPropertyValue('--'+other+'-width'))||(other==='library'?280:220))+24:0
+      const max=Math.max(180,Math.min(420,layout.clientWidth-76-otherWidth-360))
+      const next=Math.round(Math.max(180,Math.min(value,max)))
+      layout.style.setProperty(property,next+'px');handle.setAttribute('aria-valuenow',next);handle.setAttribute('aria-valuemax',max)
+      localStorage.setItem('reader-'+which+'-width',String(next))
+    }
+    handle.setAttribute('aria-valuenow',width())
+    let drag=null
+    handle.onpointerdown=e=>{if(e.button!==0)return;e.preventDefault();drag={x:e.clientX,width:width()};handle.setPointerCapture(e.pointerId);layout.classList.add('resizing');handle.classList.add('dragging')}
+    handle.onpointermove=e=>{if(drag)set(drag.width+(e.clientX-drag.x)*(which==='library'?1:-1))}
+    const end=()=>{drag=null;layout.classList.remove('resizing');handle.classList.remove('dragging')}
+    handle.onpointerup=end;handle.onlostpointercapture=end;handle.onpointercancel=end
+    handle.onkeydown=e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();set(width()+(e.key==='ArrowRight'?20:-20)*(which==='library'?1:-1))}}
+    handle.ondblclick=()=>set(which==='library'?280:220)
   }
   const dialog=$('#search-dialog')
   function open(){

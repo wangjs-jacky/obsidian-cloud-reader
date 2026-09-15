@@ -634,3 +634,16 @@ header #search-toggle{display:inline-grid}
  #reading-panel{order:3}#library-sidebar{order:1}#outline{order:2}
 }
 @media(prefers-reduced-motion:reduce){.layout,.layout #library-sidebar,.layout #outline{transition:none}.panel-dock .panel-toggle{animation:none}}
+
+@media(min-width:801px){
+ .layout{--library-width:280px;--outline-width:220px;--left:calc(var(--library-width) + 24px)}
+ .layout.has-outline{--left:calc(var(--library-width) + 24px);--right:calc(var(--outline-width) + 24px)}
+ .layout.library-closed{--left:0px}.layout.outline-closed{--right:0px}
+}
+.resize-handle{position:absolute;top:0;bottom:0;width:14px;z-index:3;cursor:col-resize;touch-action:none;outline:none}
+#resize-library{left:-8px}#resize-outline{right:-8px}
+.resize-handle::after{content:'';position:absolute;top:14px;bottom:14px;left:6px;width:2px;border-radius:2px;background:var(--accent);opacity:0;transition:opacity .15s}
+.resize-handle:hover::after,.resize-handle:focus-visible::after,.resize-handle.dragging::after{opacity:.65}
+.library-closed #resize-library,.outline-closed #resize-outline,.layout:not(.has-outline) #resize-outline{display:none}
+.layout.resizing{transition:none;user-select:none;cursor:col-resize}
+@media(max-width:800px){.resize-handle{display:none}}
