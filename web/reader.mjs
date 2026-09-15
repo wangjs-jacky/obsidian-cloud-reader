@@ -290,7 +290,7 @@ $("#settings").onclick = async () => {
     $("#config-form").reset();hideKeys();configuredKeys=!!c.configured
     for (const name of ["endpoint", "bucket", "region", "prefix"])
       $("#config-form").elements[name].value = c[name] || ""
-    for(const name of keyFields){const field=$("#config-form").elements[name];field.required=!configuredKeys;field.placeholder=configuredKeys?"••••••••（已保存）":""}
+    for(const name of keyFields){const field=$("#config-form").elements[name];field.required=!configuredKeys;field.placeholder=configuredKeys?"••••••••":""}
     $("#config-status").textContent=""
     $("#config").showModal()
   } catch (e) { $("#sync").textContent = e.message }
