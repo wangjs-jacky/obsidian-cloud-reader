@@ -1,54 +1,85 @@
-# Obsidian Cloud Reader
+<p align="center">
+  <img src="web/assets/icon-192.png" width="88" height="88" alt="Obsidian Cloud Reader" />
+</p>
 
-[中文说明](README_CN.md)
+<h1 align="center">Obsidian Cloud Reader</h1>
 
-**Live site:** [obsidian-cloud-reader.jacky-openbird.workers.dev](https://obsidian-cloud-reader.jacky-openbird.workers.dev)
+<p align="center"><strong>把存放在阿里云 OSS 的 Obsidian 笔记，变成一个登录后随时可读的私人知识库网站。</strong></p>
 
-The public instance runs on its permanent Cloudflare Workers production hostname. It is not a temporary preview deployment.
+<p align="center">
+  <a href="https://obsidian-cloud-reader.jacky-openbird.workers.dev">立即使用</a>
+  ·
+  <a href="README_EN.md">English</a>
+</p>
 
-An MIT-licensed, read-only web reader for Obsidian notes stored in Alibaba Cloud OSS. Each GitHub account starts with an empty library and connects its own bucket. No default account, bucket, credentials, or personal notes are included.
+## 它解决什么问题
 
-## Features
+你的 Obsidian 笔记已经通过 Remotely Save 保存在 OSS 中，但离开常用电脑后，查看一篇笔记仍然要安装 Obsidian、重新配置同步，或者直接翻找 Markdown 文件。
 
-- GitHub OAuth login: the first successful login creates an account automatically; no separate password or email registration.
-- Per-account OSS settings and caches, selected exclusively by the server-verified GitHub numeric user ID.
-- Expandable directory tree, filename/path search, directory scan progress, Markdown rendering, and light/dark themes.
-- Notes downloaded on demand. Persistent metadata and content caches, conditional ETag requests, bounded storage, and concurrent-request deduplication.
-- Encrypted OSS connection settings using AES-256-GCM, bound to each library's Durable Object ID.
-- Opaque, revocable server-side sessions; OAuth state, PKCE, one-time callbacks, and same-origin mutation checks.
+Obsidian Cloud Reader 为同一份 OSS 内容提供一个只读网页入口：登录一次、绑定自己的 OSS，就能在电脑、平板或手机浏览器中继续阅读和搜索笔记。
 
-## Deploy
+## 你会得到什么
 
-Use Node.js 24 and a Cloudflare account with Workers and SQLite Durable Objects available. No separately managed VPS is required; provider quotas and any usage charges still apply.
+- **熟悉的知识库结构**：按文件夹展开目录，保留 Obsidian 的组织方式。
+- **快速找到笔记**：搜索文件名和路径，并通过文章大纲跳转到对应章节。
+- **不用下载整个仓库**：先读取目录，正文和附件在打开时按需加载。
+- **更少的 OSS 请求**：已读内容会复用云端缓存，更新时只检查发生变化的内容。
+- **适合不同设备**：支持响应式布局、明暗主题和可收起的左右侧栏。
+- **每个账号相互独立**：GitHub 登录后绑定自己的 OSS，连接配置和缓存不会与其他账号混用。
 
-1. Run `npm ci`, `npm test`, and `npm run build`.
-2. Copy `wrangler.example.json` to `wrangler.json` (gitignored). Set the Worker name, account ID if needed, and `PUBLIC_ORIGIN` to the exact HTTPS origin, without a trailing slash.
-3. Create a GitHub OAuth App. Set its homepage to that origin and its callback to `https://YOUR-HOST/auth/callback`. Copy its client ID into `GITHUB_CLIENT_ID` in `wrangler.json`.
-4. Run `npx wrangler secret put GITHUB_CLIENT_SECRET` and enter the OAuth client secret.
-5. Generate a fresh 32-byte base64 secret, for example with `openssl rand -base64 32`. Store it using `npx wrangler secret put CONFIG_ENCRYPTION_KEY`. Keep a secure backup; changing this key without migrating stored settings makes existing connections unreadable.
-6. Run `npm run deploy`. Visit the site, log in through GitHub, and bind your own OSS connection.
+## 如何使用
 
-For local development, use an appropriate local OAuth callback and put secrets in a gitignored `.dev.vars` file. Production cookies require HTTPS.
+### 1. 登录
 
-Live browser acceptance verified GitHub login, a new empty account, binding OSS, reading a real note, logout protection, and reconnecting to the existing cached catalog on subsequent login. All 38 automated tests pass. Account isolation uses two synthetic identities in automated tests; a second real GitHub account has not been manually tested.
+打开 [线上网站](https://obsidian-cloud-reader.jacky-openbird.workers.dev)，使用 GitHub 登录。首次登录会自动创建账号，不需要另外设置密码。
 
-## OSS connection
+### 2. 连接 OSS
 
-Provide your Alibaba Cloud OSS endpoint, bucket, region, access key ID, secret, and optional directory prefix through the authenticated settings form. Use credentials with only the required list/read permissions. The connector reads Markdown and attachments; it never writes back to OSS. Remotely Save encrypted vaults are not supported in this MVP.
+登录后知识库默认为空。点击右上角的设置按钮，填写 Remotely Save 使用的连接信息：
 
-Search currently covers filenames and paths, not all note bodies. Metadata refreshes after 30 minutes; note cache validation uses 10 minutes and image validation uses 24 hours. Manual refresh is throttled to once per minute. Cached content is limited to 64 MiB per library. Large directory scans are paginated and keep the previous catalog if a refresh fails.
+- Endpoint
+- Bucket
+- Region
+- 目录前缀（可选）
+- Access Key ID
+- Access Key Secret
 
-## Security and privacy boundary
+点击“验证并连接”。验证成功后，网站开始建立文件目录，并显示扫描进度。
 
-Anonymous visitors see a generic empty shell. Every library API requires a valid website session. A new account has no OSS connection; there is no global fallback bucket. Settings and cached content are isolated in one SQLite Durable Object per account.
+### 3. 阅读和搜索
 
-Saved credentials are masked in settings. An authenticated, same-origin reveal action displays the complete keys; closing the dialog clears them from the fields. Blank key fields on save retain the existing credentials.
+从左侧目录选择笔记，正文会在中间区域打开，右侧显示文章大纲。顶部搜索可以按文件名或路径查找笔记；左右侧栏均可收起或拖动调整宽度。
 
-OSS credentials are encrypted at rest, but this is not end-to-end encryption: the hosting operator's backend decrypts credentials to fetch notes, and cached note content is accessible to that backend. GitHub access tokens are used only to resolve identity and are not persisted; no repository scope is requested. Never commit `.private`, `.dev.vars`, deployment secrets, personal notes, or generated private content.
+### 4. 获取更新
 
-Public note sharing and email login are not implemented. See [migration guidance](MIGRATION.md) before replacing an existing private instance.
+网站会定期检查目录变化。需要立即同步时，点击“检查更新”；不会为了打开一篇笔记而重新拉取全部正文。
 
-## Development
+## 使用前提
+
+- Obsidian 笔记已通过 Remotely Save 保存到阿里云 OSS。
+- OSS 中保存的是未加密的 Markdown 与附件。
+- 建议为网站创建只有列目录和读取文件权限的 OSS 凭据。
+
+## 隐私与安全
+
+- 网站只读取 OSS，不会修改或删除你的文件。
+- 每个 GitHub 账号拥有独立的连接配置、目录和正文缓存。
+- OSS 密钥会加密保存，普通设置页面不会回显完整密钥。
+- 这是服务端加密，不是端到端加密：网站后端需要解密凭据才能读取笔记。
+- 项目采用 MIT 许可证，可自行部署和审查源码。
+
+## 当前限制
+
+- 搜索范围是文件名和路径，暂不搜索全部正文。
+- 暂不支持 Remotely Save 加密仓库。
+- 暂不提供公开分享、邮箱登录或在线编辑。
+
+<details>
+<summary><strong>开发者：自行部署</strong></summary>
+
+项目运行在 Cloudflare Workers，使用 Workers Static Assets 和 SQLite Durable Objects，不需要单独维护 VPS。
+
+准备 Node.js 24、Cloudflare 账号和 GitHub OAuth App，然后执行：
 
 ```sh
 npm ci
@@ -56,4 +87,20 @@ npm test
 npm run build
 ```
 
-`src/auth.mjs` handles GitHub OAuth and sessions, `src/app.mjs` enforces account routing, `src/library.mjs` owns per-account settings and caches, and `web/` contains the reader UI. Markdown rendering uses markdown-it and DOMPurify. This project is independent of Quartz.
+复制 `wrangler.example.json` 为 `wrangler.json`，设置正式域名、Cloudflare 账号和 GitHub OAuth Client ID。随后保存两个服务端密钥：
+
+```sh
+npx wrangler secret put GITHUB_CLIENT_SECRET
+npx wrangler secret put CONFIG_ENCRYPTION_KEY
+npm run deploy
+```
+
+GitHub OAuth App 的回调地址应为 `https://你的域名/auth/callback`。`CONFIG_ENCRYPTION_KEY` 应使用独立的 32 字节 Base64 密钥，例如通过 `openssl rand -base64 32` 生成。
+
+部署密钥、个人笔记、`.private` 和 `.dev.vars` 不应提交到仓库。替换旧实例前请阅读 [迁移说明](MIGRATION.md)。
+
+</details>
+
+## 开源许可
+
+[MIT License](LICENSE)
